@@ -4,12 +4,17 @@ import java.util.Scanner;
 
 public class CafeApp {
     static void main() {
+        String customer = greetCustomer();
+    }
+
+    public static String greetCustomer() {
         Scanner scanner = new Scanner(System.in);
 
         IO.print("Welcome! What is your name? ");
-        String customer = scanner.nextLine();
-        IO.print("Hi " + customer + "! Here is our menu:");
+        String customerName = scanner.nextLine();
+        IO.println("Hi " + customerName + "! Here is our menu: \n");
 
         scanner.close();
+        return customerName;
     }
 }
