@@ -3,19 +3,20 @@ package se.lexicon;
 import java.util.Scanner;
 
 public class CafeApp {
+    public static Scanner scanner = new Scanner(System.in);
+
     static void main() {
         String customer = greetCustomer();
         displayMenu();
+        takeOrder();
+        scanner.close();
     }
 
     public static String greetCustomer() {
-        Scanner scanner = new Scanner(System.in);
-
         IO.print("Welcome! What is your name? ");
         String customerName = scanner.nextLine();
         IO.println("Hi " + customerName + "! Here is our menu: \n");
 
-        scanner.close();
         return customerName;
     }
 
@@ -38,11 +39,29 @@ public class CafeApp {
         IO.println("==============================");
         IO.println("         Lexicon Cafe");
         IO.println("==============================");
-        System.out.printf("%-1d. %-15s %6.2f SEK%n",1, item1, price1);
-        System.out.printf("%-1d. %-15s %6.2f SEK%n",2, item2, price2);
-        System.out.printf("%-1d. %-15s %6.2f SEK%n",3, item3, price3);
-        System.out.printf("%-1d. %-15s %6.2f SEK%n",4, item4, price4);
-        System.out.printf("%-1d. %-15s %6.2f SEK%n",5, item5, price5);
+        System.out.printf("%-1d. %-15s %6.2f SEK%n", 1, item1, price1);
+        System.out.printf("%-1d. %-15s %6.2f SEK%n", 2, item2, price2);
+        System.out.printf("%-1d. %-15s %6.2f SEK%n", 3, item3, price3);
+        System.out.printf("%-1d. %-15s %6.2f SEK%n", 4, item4, price4);
+        System.out.printf("%-1d. %-15s %6.2f SEK%n", 5, item5, price5);
         IO.println("==============================");
     }
+
+    public static void takeOrder() {
+        IO.print("Enter item number (1-5): ");
+        int order = scanner.nextInt();
+
+        while (order < 1 || order > 5) {
+            IO.print("You gave a wrong number. It must be between 1-5! Enter item number again! ");
+            order = scanner.nextInt();
+        }
+
+        IO.print("How many? ");
+        int quantity = scanner.nextInt();
+
+        IO.println("The item you ordered: " + order);
+        IO.println("The amount you ordered: " + quantity);
+    }
+
+
 }
