@@ -4,11 +4,29 @@ import java.util.Scanner;
 
 public class CafeApp {
     public static Scanner scanner = new Scanner(System.in);
+    public static int order;
+    public static int quantity;
+
+    public static String item1 = "Espresso";
+    public static double price1 = 25.00;
+
+    public static String item2 = "Cappuccino";
+    public static double price2 = 35.00;
+
+    public static String item3 = "Latte";
+    public static double price3 = 40.00;
+
+    public static String item4 = "Croissant";
+    public static double price4 = 30.00;
+
+    public static String item5 = "Sandwich";
+    public static double price5 = 55.00;
 
     static void main() {
         String customer = greetCustomer();
         displayMenu();
         takeOrder();
+        printReceipt(customer, order, quantity);
         scanner.close();
     }
 
@@ -21,21 +39,6 @@ public class CafeApp {
     }
 
     public static void displayMenu() {
-        String item1 = "Espresso";
-        double price1 = 25.00;
-
-        String item2 = "Cappuccino";
-        double price2 = 35.00;
-
-        String item3 = "Latte";
-        double price3 = 40.00;
-
-        String item4 = "Croissant";
-        double price4 = 30.00;
-
-        String item5 = "Sandwich";
-        double price5 = 55.00;
-
         IO.println("==============================");
         IO.println("         Lexicon Cafe");
         IO.println("==============================");
@@ -49,7 +52,7 @@ public class CafeApp {
 
     public static void takeOrder() {
         IO.print("Enter item number (1-5): ");
-        int order = scanner.nextInt();
+        order = scanner.nextInt();
 
         while (order < 1 || order > 5) {
             IO.print("You gave a wrong number. It must be between 1-5! Enter item number again! ");
@@ -57,11 +60,44 @@ public class CafeApp {
         }
 
         IO.print("How many? ");
-        int quantity = scanner.nextInt();
-
-        IO.println("The item you ordered: " + order);
-        IO.println("The amount you ordered: " + quantity);
+        quantity = scanner.nextInt();
     }
 
+    public static String getItemName(int itemNumber) {
+        switch (itemNumber) {
+            case 1: return item1;
+            case 2: return item2;
+            case 3: return item3;
+            case 4: return item4;
+            case 5: return item5;
+            default: return "No item with this number.";
+        }
+    }
 
+    public static double getItemPrice(int itemNumber) {
+        switch (itemNumber) {
+            case 1: return price1;
+            case 2: return price2;
+            case 3: return price3;
+            case 4: return price4;
+            case 5: return price5;
+            default: return 0.00;
+        }
+    }
+
+    public static void printReceipt(String customerName, int order, int quantity) {
+        IO.println();
+        IO.println("==============================");
+        IO.println("         Lexicon Cafe");
+        IO.println("==============================");
+        System.out.printf("%-10s : %-10s %n", "Customer", customerName);
+        System.out.printf("%-10s : %-10s x %-2s %n", "Item", getItemName(order), quantity);
+        System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", getItemPrice(order) * quantity);
+        IO.println("------------------------------");
+        System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity);
+        IO.println("==============================");
+        IO.println("    Thank you, " + customerName + "!");
+        IO.println("    See you next time!");
+        IO.println("==============================");
+    }
 }
