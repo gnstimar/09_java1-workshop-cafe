@@ -93,8 +93,9 @@ public class CafeApp {
         System.out.printf("%-10s : %-10s %n", "Customer", customerName);
         System.out.printf("%-10s : %-10s x %-2s %n", "Item", getItemName(order), quantity);
         System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", getItemPrice(order) * quantity);
+        System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.12);
         IO.println("------------------------------");
-        System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity);
+        System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 1.12);
         IO.println("==============================");
         IO.println("    Thank you, " + customerName + "!");
         IO.println("    See you next time!");
