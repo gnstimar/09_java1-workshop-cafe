@@ -6,6 +6,7 @@ public class CafeApp {
     public static Scanner scanner = new Scanner(System.in);
     public static int order;
     public static int quantity;
+    public static boolean loyalty = false;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -61,6 +62,12 @@ public class CafeApp {
 
         IO.print("How many? ");
         quantity = scanner.nextInt();
+
+        IO.print("Loyalty member? (yes/no): ");
+        String customerLoyalty = scanner.next();
+        if (customerLoyalty.equalsIgnoreCase("yes")) {
+            loyalty = true;
+        }
     }
 
     public static String getItemName(int itemNumber) {
@@ -93,9 +100,18 @@ public class CafeApp {
         System.out.printf("%-10s : %-10s %n", "Customer", customerName);
         System.out.printf("%-10s : %-10s x %-2s %n", "Item", getItemName(order), quantity);
         System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", getItemPrice(order) * quantity);
-        System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.12);
+        if (loyalty) {
+            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", getItemPrice(order) * quantity * -0.15);
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.85 * 0.12);
+        } else {
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.12);
+        }
         IO.println("------------------------------");
-        System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 1.12);
+        if (loyalty) {
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 0.85 * 1.12);
+        } else {
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 1.12);
+        }
         IO.println("==============================");
         IO.println("    Thank you, " + customerName + "!");
         IO.println("    See you next time!");
