@@ -103,12 +103,17 @@ public class CafeApp {
         if (loyalty) {
             System.out.printf("%-10s : %-6.2f SEK%n", "Discount", getItemPrice(order) * quantity * -0.15);
             System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.85 * 0.12);
+        } else if (getItemPrice(order) * quantity > 150) {
+            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", getItemPrice(order) * quantity * -0.10);
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.90 * 0.12);
         } else {
             System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.12);
         }
         IO.println("------------------------------");
         if (loyalty) {
             System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 0.85 * 1.12);
+        } else if (getItemPrice(order) * quantity > 150) {
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 0.90 * 1.12);
         } else {
             System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 1.12);
         }
