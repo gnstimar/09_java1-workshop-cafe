@@ -10,6 +10,7 @@ public class CafeApp {
     public static double loyaltyDiscount = 0.15;
     public static double vat = 0.12;
     public static double bigOrderDiscount = 0.10;
+    public static double bigOrderMinimum = 150.00;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -142,7 +143,7 @@ public class CafeApp {
         if (loyalty) {
             System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateLoyaltyDiscount(order, quantity));
             System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateLoyaltyVAT(order, quantity));
-        } else if (getItemPrice(order) * quantity > 150) {
+        } else if (calculateBasePrice(order, quantity) > bigOrderMinimum) {
             System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateBigOrderDiscount(order, quantity));
             System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateBigOrderVAT(order, quantity));
         } else {
@@ -151,7 +152,7 @@ public class CafeApp {
         IO.println("------------------------------");
         if (loyalty) {
             System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateLoyaltyTotalPrice(order, quantity));
-        } else if (getItemPrice(order) * quantity > 150) {
+        } else if (calculateBasePrice(order, quantity) > bigOrderMinimum) {
             System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateBigOrderTotalPrice(order, quantity));
         } else {
             System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateTotalPrice(order, quantity));
