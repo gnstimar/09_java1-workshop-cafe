@@ -7,6 +7,9 @@ public class CafeApp {
     public static int order;
     public static int quantity;
     public static boolean loyalty = false;
+    public static double loyaltyDiscount = 0.15;
+    public static double vat = 0.12;
+    public static double bigOrderDiscount = 0.10;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -92,6 +95,42 @@ public class CafeApp {
         }
     }
 
+    public static double calculateBasePrice(int order, int quantity) {
+        return getItemPrice(order) * quantity;
+    }
+
+    public static double calculateBaseVAT(int order, int quantity) {
+        return getItemPrice(order) * quantity * vat;
+    }
+
+    public static double calculateTotalPrice(int order, int quantity) {
+        return getItemPrice(order) * quantity * (1 + vat);
+    }
+
+    public static double calculateLoyaltyDiscount(int order, int quantity) {
+        return getItemPrice(order) * quantity * (-1 * loyaltyDiscount);
+    }
+
+    public static double calculateLoyaltyVAT(int order, int quantity) {
+        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * vat;
+    }
+
+    public static double calculateLoyaltyTotalPrice(int order, int quantity) {
+        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * (1 + vat);
+    }
+
+    public static double calculateBigOrderDiscount(int order, int quantity) {
+        return getItemPrice(order) * quantity * (-1 * bigOrderDiscount);
+    }
+
+    public static double calculateBigOrderVAT(int order, int quantity) {
+        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * vat;
+    }
+
+    public static double calculateBigOrderTotalPrice(int order, int quantity) {
+        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * (1 + vat);
+    }
+
     public static void printReceipt(String customerName, int order, int quantity) {
         IO.println();
         IO.println("==============================");
@@ -99,23 +138,23 @@ public class CafeApp {
         IO.println("==============================");
         System.out.printf("%-10s : %-10s %n", "Customer", customerName);
         System.out.printf("%-10s : %-10s x %-2s %n", "Item", getItemName(order), quantity);
-        System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", getItemPrice(order) * quantity);
+        System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", calculateBasePrice(order, quantity));
         if (loyalty) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", getItemPrice(order) * quantity * -0.15);
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.85 * 0.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateLoyaltyDiscount(order, quantity));
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateLoyaltyVAT(order, quantity));
         } else if (getItemPrice(order) * quantity > 150) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", getItemPrice(order) * quantity * -0.10);
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.90 * 0.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateBigOrderDiscount(order, quantity));
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateBigOrderVAT(order, quantity));
         } else {
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", getItemPrice(order) * quantity * 0.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateBaseVAT(order, quantity));
         }
         IO.println("------------------------------");
         if (loyalty) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 0.85 * 1.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateLoyaltyTotalPrice(order, quantity));
         } else if (getItemPrice(order) * quantity > 150) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 0.90 * 1.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateBigOrderTotalPrice(order, quantity));
         } else {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", getItemPrice(order) * quantity * 1.12);
+            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateTotalPrice(order, quantity));
         }
         IO.println("==============================");
         IO.println("    Thank you, " + customerName + "!");
