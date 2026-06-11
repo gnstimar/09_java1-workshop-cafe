@@ -11,6 +11,8 @@ public class CafeApp {
     public static double vat = 0.12;
     public static double bigOrderDiscount = 0.10;
     public static double bigOrderMinimum = 150.00;
+    public static int dailyTotalCustomer = 0;
+    public static double dailyTotalSales = 0;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -28,19 +30,21 @@ public class CafeApp {
     public static double price5 = 55.00;
 
     static void main() {
-        String customer = greetCustomer();
-        displayMenu();
-        takeOrder();
-        printReceipt(customer, order, quantity);
+        while (true) {
+            IO.print("Next customer name (or 'done' to close): ");
+            String name = scanner.nextLine();
+            if (name.equalsIgnoreCase("done")) {
+                break;
+            }
+            IO.println("Hi " + name + "! Here is our menu: \n");
+            displayMenu();
+            dailyTotalSales += takeOrder();
+            IO.println("---       NEXT ORDER       ---");
+            dailyTotalCustomer += 1;
+            scanner.nextLine();
+        }
+        endOfDayReport();
         scanner.close();
-    }
-
-    public static String greetCustomer() {
-        IO.print("Welcome! What is your name? ");
-        String customerName = scanner.nextLine();
-        IO.println("Hi " + customerName + "! Here is our menu: \n");
-
-        return customerName;
     }
 
     public static void displayMenu() {
@@ -55,7 +59,7 @@ public class CafeApp {
         IO.println("==============================");
     }
 
-    public static void takeOrder() {
+    public static double takeOrder() {
         IO.print("Enter item number (1-5): ");
         order = scanner.nextInt();
 
@@ -72,6 +76,17 @@ public class CafeApp {
         if (customerLoyalty.equalsIgnoreCase("yes")) {
             loyalty = true;
         }
+
+        return calculateBasePrice(order, quantity);
+    }
+
+    public static void endOfDayReport() {
+        IO.println("==============================");
+        IO.println("       END OF DAY REPORT");
+        IO.println("==============================");
+        System.out.printf("%-15s : %-5s %n", "Customers served", dailyTotalCustomer);
+        System.out.printf("%-15s : %-6.2f SEK%n", "Total revenue", dailyTotalSales);
+        IO.println("==============================");
     }
 
     public static String getItemName(int itemNumber) {
