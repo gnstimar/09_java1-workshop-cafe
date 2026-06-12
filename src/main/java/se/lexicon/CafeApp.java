@@ -1,5 +1,6 @@
 package se.lexicon;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CafeApp {
@@ -55,44 +56,82 @@ public class CafeApp {
         IO.println("==============================");
     }
 
+    public static int readIntegerInput(String message) {
+        int numberToReadIn = 0;
+        boolean isValid = false;
+
+        while (!isValid) {
+            try {
+                IO.print(message);
+                numberToReadIn = scanner.nextInt();
+                isValid = true;
+            } catch (InputMismatchException e) {
+                IO.println("ERROR: Invalid input! Please enter a number.");
+                scanner.nextLine();
+            }
+        }
+        return numberToReadIn;
+    }
+
+    public static boolean readLoyaltyInput(String message) {
+        while (true) {
+            IO.print(message);
+            String customerLoyalty = scanner.next();
+            if (customerLoyalty.equalsIgnoreCase("yes")) {
+
+                return true;
+            } else if (customerLoyalty.equalsIgnoreCase("no")) {
+
+                return false;
+            } else {
+                IO.println("Error: Invalid input! Please type 'yes' or 'no'.");
+            }
+        }
+    }
+
     public static void takeOrder() {
-        IO.print("Enter item number (1-5): ");
-        order = scanner.nextInt();
+        order = readIntegerInput("Enter item number (1-5): ");
+            while (order < 1 || order > 5) {
+                IO.print("You gave a wrong number. It must be between 1-5! Enter item number again! ");
+                order = scanner.nextInt();
+            }
 
-        while (order < 1 || order > 5) {
-            IO.print("You gave a wrong number. It must be between 1-5! Enter item number again! ");
-            order = scanner.nextInt();
-        }
+        quantity = readIntegerInput("How many? ");
 
-        IO.print("How many? ");
-        quantity = scanner.nextInt();
-
-        IO.print("Loyalty member? (yes/no): ");
-        String customerLoyalty = scanner.next();
-        if (customerLoyalty.equalsIgnoreCase("yes")) {
-            loyalty = true;
-        }
+        loyalty = readLoyaltyInput("Loyalty member? (yes/no): ");
     }
 
     public static String getItemName(int itemNumber) {
         switch (itemNumber) {
-            case 1: return item1;
-            case 2: return item2;
-            case 3: return item3;
-            case 4: return item4;
-            case 5: return item5;
-            default: return "No item with this number.";
+            case 1:
+                return item1;
+            case 2:
+                return item2;
+            case 3:
+                return item3;
+            case 4:
+                return item4;
+            case 5:
+                return item5;
+            default:
+                return "No item with this number.";
         }
     }
 
     public static double getItemPrice(int itemNumber) {
         switch (itemNumber) {
-            case 1: return price1;
-            case 2: return price2;
-            case 3: return price3;
-            case 4: return price4;
-            case 5: return price5;
-            default: return 0.00;
+            case 1:
+                return price1;
+            case 2:
+                return price2;
+            case 3:
+                return price3;
+            case 4:
+                return price4;
+            case 5:
+                return price5;
+            default:
+                return 0.00;
         }
     }
 
@@ -113,11 +152,11 @@ public class CafeApp {
     }
 
     public static double calculateLoyaltyVAT(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * vat;
+        return getItemPrice(order) * quantity * (1 - loyaltyDiscount) * vat;
     }
 
     public static double calculateLoyaltyTotalPrice(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * (1 + vat);
+        return getItemPrice(order) * quantity * (1 - loyaltyDiscount) * (1 + vat);
     }
 
     public static double calculateBigOrderDiscount(int order, int quantity) {
@@ -125,11 +164,11 @@ public class CafeApp {
     }
 
     public static double calculateBigOrderVAT(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * vat;
+        return getItemPrice(order) * quantity * (1 - bigOrderDiscount) * vat;
     }
 
     public static double calculateBigOrderTotalPrice(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * (1 + vat);
+        return getItemPrice(order) * quantity * (1 - bigOrderDiscount) * (1 + vat);
     }
 
     public static void printReceipt(String customerName, int order, int quantity) {
