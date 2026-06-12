@@ -1,5 +1,6 @@
 package se.lexicon;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CafeApp {
@@ -7,10 +8,6 @@ public class CafeApp {
     public static int order;
     public static int quantity;
     public static boolean loyalty = false;
-    public static double loyaltyDiscount = 0.15;
-    public static double vat = 0.12;
-    public static double bigOrderDiscount = 0.10;
-    public static double bigOrderMinimum = 150.00;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -31,7 +28,13 @@ public class CafeApp {
         String customer = greetCustomer();
         displayMenu();
         takeOrder();
-        printReceipt(customer, order, quantity);
+        Order myOrder = new Order();
+        myOrder.customerName = customer;
+        myOrder.item = getItemName(order);
+        myOrder.quantity = quantity;
+        myOrder.unitPrice = getItemPrice(order);
+        myOrder.isMember = loyalty;
+        myOrder.printReceipt();
         scanner.close();
     }
 
@@ -55,23 +58,60 @@ public class CafeApp {
         IO.println("==============================");
     }
 
+    public static int readMenuItemNumber(String message) {
+        while (true) {
+            try {
+                IO.print(message);
+                int number = scanner.nextInt();
+                if (number >= 1 && number <= 5) {
+                    return number;
+                } else {
+                    IO.print("Error: The number is out of range! It must be between 1 and 5. ");
+                }
+            } catch (InputMismatchException e) {
+                IO.println("ERROR: Invalid input! Please enter number only.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public static int readQuantityInput(String message) {
+        while (true) {
+            try {
+                IO.print(message);
+                int quantity = scanner.nextInt();
+                if (quantity >= 1) {
+                    return quantity;
+                } else {
+                    IO.print("ERROR: Quantity must be at least 1! ");
+                }
+            } catch (InputMismatchException e) {
+                IO.println("ERROR: Invalid input! Please enter number only.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    public static boolean readLoyaltyInput(String message) {
+        while (true) {
+            IO.print(message);
+            String customerLoyalty = scanner.next();
+            if (customerLoyalty.equalsIgnoreCase("yes")) {
+
+                return true;
+            } else if (customerLoyalty.equalsIgnoreCase("no")) {
+
+                return false;
+            } else {
+                IO.println("Error: Invalid input! Please type 'yes' or 'no'.");
+            }
+        }
+    }
+
     public static void takeOrder() {
-        IO.print("Enter item number (1-5): ");
-        order = scanner.nextInt();
-
-        while (order < 1 || order > 5) {
-            IO.print("You gave a wrong number. It must be between 1-5! Enter item number again! ");
-            order = scanner.nextInt();
-        }
-
-        IO.print("How many? ");
-        quantity = scanner.nextInt();
-
-        IO.print("Loyalty member? (yes/no): ");
-        String customerLoyalty = scanner.next();
-        if (customerLoyalty.equalsIgnoreCase("yes")) {
-            loyalty = true;
-        }
+        order = readMenuItemNumber("Enter item number (1-5): ");
+        quantity = readQuantityInput("How many? ");
+        loyalty = readLoyaltyInput("Loyalty member? (yes/no): ");
     }
 
     public static String getItemName(int itemNumber) {
@@ -96,70 +136,4 @@ public class CafeApp {
         }
     }
 
-    public static double calculateBasePrice(int order, int quantity) {
-        return getItemPrice(order) * quantity;
-    }
-
-    public static double calculateBaseVAT(int order, int quantity) {
-        return getItemPrice(order) * quantity * vat;
-    }
-
-    public static double calculateTotalPrice(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1 + vat);
-    }
-
-    public static double calculateLoyaltyDiscount(int order, int quantity) {
-        return getItemPrice(order) * quantity * (-1 * loyaltyDiscount);
-    }
-
-    public static double calculateLoyaltyVAT(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * vat;
-    }
-
-    public static double calculateLoyaltyTotalPrice(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-loyaltyDiscount) * (1 + vat);
-    }
-
-    public static double calculateBigOrderDiscount(int order, int quantity) {
-        return getItemPrice(order) * quantity * (-1 * bigOrderDiscount);
-    }
-
-    public static double calculateBigOrderVAT(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * vat;
-    }
-
-    public static double calculateBigOrderTotalPrice(int order, int quantity) {
-        return getItemPrice(order) * quantity * (1-bigOrderDiscount) * (1 + vat);
-    }
-
-    public static void printReceipt(String customerName, int order, int quantity) {
-        IO.println();
-        IO.println("==============================");
-        IO.println("         Lexicon Cafe");
-        IO.println("==============================");
-        System.out.printf("%-10s : %-10s %n", "Customer", customerName);
-        System.out.printf("%-10s : %-10s x %-2s %n", "Item", getItemName(order), quantity);
-        System.out.printf("%-10s : %-6.2f SEK%n", "Subtotal", calculateBasePrice(order, quantity));
-        if (loyalty) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateLoyaltyDiscount(order, quantity));
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateLoyaltyVAT(order, quantity));
-        } else if (calculateBasePrice(order, quantity) > bigOrderMinimum) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "Discount", calculateBigOrderDiscount(order, quantity));
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateBigOrderVAT(order, quantity));
-        } else {
-            System.out.printf("%-10s : %-6.2f SEK%n", "VAT", calculateBaseVAT(order, quantity));
-        }
-        IO.println("------------------------------");
-        if (loyalty) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateLoyaltyTotalPrice(order, quantity));
-        } else if (calculateBasePrice(order, quantity) > bigOrderMinimum) {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateBigOrderTotalPrice(order, quantity));
-        } else {
-            System.out.printf("%-10s : %-6.2f SEK%n", "TOTAL", calculateTotalPrice(order, quantity));
-        }
-        IO.println("==============================");
-        IO.println("    Thank you, " + customerName + "!");
-        IO.println("    See you next time!");
-        IO.println("==============================");
-    }
 }
