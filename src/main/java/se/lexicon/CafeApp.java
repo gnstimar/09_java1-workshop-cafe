@@ -5,9 +5,6 @@ import java.util.Scanner;
 
 public class CafeApp {
     public static Scanner scanner = new Scanner(System.in);
-    public static int order;
-    public static int quantity;
-    public static boolean loyalty = false;
 
     public static String item1 = "Espresso";
     public static double price1 = 25.00;
@@ -27,13 +24,24 @@ public class CafeApp {
     static void main() {
         String customer = greetCustomer();
         displayMenu();
-        takeOrder();
         Order myOrder = new Order();
         myOrder.customerName = customer;
-        myOrder.item = getItemName(order);
-        myOrder.quantity = quantity;
-        myOrder.unitPrice = getItemPrice(order);
-        myOrder.isMember = loyalty;
+
+        myOrder.isMember = readLoyaltyInput("Loyalty member? (yes/no): ");
+        while (true) {
+            int itemNumber = readMenuItemNumber("Enter item number (1-5, or 0 to finish): ");
+            if (itemNumber == 0) {
+                break;
+            }
+
+            int quantity = readQuantityInput("How many? ");
+
+            String name = getItemName(itemNumber);
+            double price = getItemPrice(itemNumber);
+
+            myOrder.addItem(name, price, quantity);
+            IO.println(name + " added.\n");
+        }
         myOrder.printReceipt();
         scanner.close();
     }
@@ -47,15 +55,15 @@ public class CafeApp {
     }
 
     public static void displayMenu() {
-        IO.println("==============================");
-        IO.println("         Lexicon Cafe");
-        IO.println("==============================");
+        IO.println("====================================");
+        IO.println("            Lexicon Cafe");
+        IO.println("====================================");
         System.out.printf("%-1d. %-15s %6.2f SEK%n", 1, item1, price1);
         System.out.printf("%-1d. %-15s %6.2f SEK%n", 2, item2, price2);
         System.out.printf("%-1d. %-15s %6.2f SEK%n", 3, item3, price3);
         System.out.printf("%-1d. %-15s %6.2f SEK%n", 4, item4, price4);
         System.out.printf("%-1d. %-15s %6.2f SEK%n", 5, item5, price5);
-        IO.println("==============================");
+        IO.println("====================================");
     }
 
     public static int readMenuItemNumber(String message) {
@@ -63,10 +71,10 @@ public class CafeApp {
             try {
                 IO.print(message);
                 int number = scanner.nextInt();
-                if (number >= 1 && number <= 5) {
+                if (number >= 0 && number <= 5) {
                     return number;
                 } else {
-                    IO.print("Error: The number is out of range! It must be between 1 and 5. ");
+                    IO.print("Error: The number is out of range! It must be between 0 and 5. ");
                 }
             } catch (InputMismatchException e) {
                 IO.println("ERROR: Invalid input! Please enter number only.");
@@ -108,31 +116,37 @@ public class CafeApp {
         }
     }
 
-    public static void takeOrder() {
-        order = readMenuItemNumber("Enter item number (1-5): ");
-        quantity = readQuantityInput("How many? ");
-        loyalty = readLoyaltyInput("Loyalty member? (yes/no): ");
-    }
-
     public static String getItemName(int itemNumber) {
         switch (itemNumber) {
-            case 1: return item1;
-            case 2: return item2;
-            case 3: return item3;
-            case 4: return item4;
-            case 5: return item5;
-            default: return "No item with this number.";
+            case 1:
+                return item1;
+            case 2:
+                return item2;
+            case 3:
+                return item3;
+            case 4:
+                return item4;
+            case 5:
+                return item5;
+            default:
+                return "No item with this number.";
         }
     }
 
     public static double getItemPrice(int itemNumber) {
         switch (itemNumber) {
-            case 1: return price1;
-            case 2: return price2;
-            case 3: return price3;
-            case 4: return price4;
-            case 5: return price5;
-            default: return 0.00;
+            case 1:
+                return price1;
+            case 2:
+                return price2;
+            case 3:
+                return price3;
+            case 4:
+                return price4;
+            case 5:
+                return price5;
+            default:
+                return 0.00;
         }
     }
 
